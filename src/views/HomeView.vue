@@ -1,12 +1,12 @@
 <template>
   <div class="home">
-    <!-- <div v-if="load">Load</div>
-        <div v-else-if="sourceError">{{sourceError}}</div> -->
+    <div v-if="load">Load</div>
+    <div v-else-if="sourceError">{{sourceError}}</div>
     <!-- <div v-else>{{sourceData}}</div> -->
-    <main class="container">
+    <main v-else class="container">
       <!-- 分頁切換pagination -->
       <div class="pagination">
-        <button type="button" @click="prevPage">上一頁</button>
+        <button type="button" @click="prevPage" :disabled="curPage === 1">上一頁</button>
         <button
           class="pageNum"
           type="button"
@@ -17,7 +17,7 @@
         >
           {{ i }}
         </button>
-        <button type="button" @click="nextPage">下一頁</button>
+        <button type="button" @click="nextPage" :disabled="curPage === pageNum">下一頁</button>
       </div>
       <!-- 資料內容(當前分頁) -->
       <div v-for="item in dataShow" :key="item" class="itemList">
@@ -107,21 +107,6 @@
           })
           .then((response) => {
             this.sourceData = response.data;
-            this.pageNum = Math.ceil(this.sourceData.length / this.pageSize) || 1; //計算總共有幾頁 默認1
-            //循環頁面
-            for (let i = 0; i < this.pageNum; i++) {
-              //每一個分頁都是一個數組
-              //根據每頁顯示數量將數據分割到每一頁 假設pageSize＝3, 第一頁是1~3條, slice(0,3), 第二頁是4～6 slice(3,6)
-              this.totalPage[i] = this.sourceData.slice(
-                this.pageSize * i,
-                this.pageSize * (i + 1)
-              );
-            }
-            //取到數據後默認顯示第一頁內容
-            this.dataShow = this.totalPage[this.curPage];
-            console.log("this.dataShow", this.dataShow);
-            this.i = this.curPage;
-            console.log("this.i", this.i);
           })
           .catch((err) => {
             this.sourceError = err.response;
@@ -130,17 +115,27 @@
             this.load = false;
           });
       },
-      nextPage() {
-        if (this.curPage === this.pageNum - 1) return;
-        this.dataShow = this.totalPage[++this.curPage];
+      nextPage(i) {
+        console.log("++this.curPage之前", this.curPage);
+        if (this.curPage === this.pageNum) return;
+        // this.curPage++;
+        this.dataShow = this.totalPage[this.curPage++];
+        console.log("++this.curPage之後", this.curPage);
       },
       prevPage() {
-        if (this.curPage === 0) return;
-        this.dataShow = this.totalPage[--this.curPage];
+        if (this.curPage === 1 || 0) return; 
+        console.log("this.curPage--之前", this.curPage);
+        this.curPage--;
+        this.dataShow = this.totalPage[this.curPage-1];
+        console.log("this.curPage--之後", this.curPage);
+
       },
       page(i) {
         this.curPage = i;
         this.dataShow = this.totalPage[i - 1];
+        console.log("i", i);
+        console.log("this.curPage",this.curPage);
+        console.log("this.totalPage[i - 1]", this.totalPage[i - 1]);
       },
     },
     async created() {
@@ -148,6 +143,26 @@
       await this.getAuthorizationHeader();
       //會等getAuthorizationHeader裡面的promise做完事情在做下一個getSourceData
       await this.getSourceData();
+
+      this.pageNum = Math.ceil(this.sourceData.length / this.pageSize) || 1; //計算總共有幾頁 默認1
+      console.log("this.sourceData.length", this.sourceData.length);
+      console.log("this.pageSize", this.pageSize);
+      console.log("this.pageNum", this.pageNum);
+      //循環頁面
+      for (let i = 0; i < this.pageNum; i++) {
+        //每一個分頁都是一個數組
+        //根據每頁顯示數量將數據分割到每一頁 假設pageSize＝3, 第一頁是1~3條, slice(0,3), 第二頁是4～6 slice(3,6)
+        this.totalPage[i] = this.sourceData.slice(
+          this.pageSize * i,
+          this.pageSize * (i + 1)
+        );
+      }
+      //取到數據後默認顯示第一頁內容
+      this.dataShow = this.totalPage[this.curPage++];
+      console.log("this.dataShow", this.dataShow);
+      this.i = this.curPage;
+      console.log("this.i", this.i);
+      console.log("this.curPage", this.curPage);
     },
   };
 </script>
@@ -165,6 +180,10 @@
         margin: 0 0.5rem;
         padding: 0.25rem 0.55rem;
         height: 1.875rem;
+        cursor: pointer;
+        &:hover{
+          background-color: #fa0;
+        }
         &.active {
           background-color: #fa0;
         }
