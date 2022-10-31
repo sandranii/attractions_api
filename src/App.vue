@@ -1,8 +1,7 @@
 <template>
   <nav>
     <router-link to="/">資料列表</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/token">Token</router-link>
+    <router-link to="/about">About</router-link>
   </nav>
   <router-view/>
 </template>
