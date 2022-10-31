@@ -2,7 +2,6 @@
   <div class="home">
     <div v-if="load">Load</div>
     <div v-else-if="sourceError">{{sourceError}}</div>
-    <!-- <div v-else>{{sourceData}}</div> -->
     <main v-else class="container">
       <!-- 分頁切換pagination -->
       <div class="pagination">
@@ -20,11 +19,12 @@
         <button type="button" @click="nextPage" :disabled="curPage === pageNum">下一頁</button>
       </div>
       <!-- 資料內容(當前分頁) -->
-      <div v-for="item in dataShow" :key="item" class="itemList">
+      <div v-for="(item, index) in dataShow" :key="item.index" class="itemList">
         <div class="txtContainer">
           <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
           <p>開放時間： {{ item.OpenTime }}</p>
           <p>景點描述： {{ item.DescriptionDetail }}</p>
+          <button class="fav" @click="addToFav(item,index)">加入我的最愛</button>
         </div>
         <div class="picContainer">
           <img
@@ -60,7 +60,7 @@
         pageNum: 1, //共幾頁＝所有數量/每頁顯示數量
         dataShow: [], //當前分頁顯示的資料
         curPage: 0, // 默認當前顯示第一頁
-        i: 0,
+        favList: [], //我的最愛列表
       };
     },
     methods: {
@@ -115,27 +115,37 @@
             this.load = false;
           });
       },
+      // --- pagination ---
       nextPage(i) {
-        console.log("++this.curPage之前", this.curPage);
         if (this.curPage === this.pageNum) return;
-        // this.curPage++;
         this.dataShow = this.totalPage[this.curPage++];
-        console.log("++this.curPage之後", this.curPage);
       },
       prevPage() {
-        if (this.curPage === 1 || 0) return; 
-        console.log("this.curPage--之前", this.curPage);
+        if (this.curPage === 1 || 0) return;
         this.curPage--;
         this.dataShow = this.totalPage[this.curPage-1];
-        console.log("this.curPage--之後", this.curPage);
-
       },
       page(i) {
         this.curPage = i;
         this.dataShow = this.totalPage[i - 1];
-        console.log("i", i);
-        console.log("this.curPage",this.curPage);
-        console.log("this.totalPage[i - 1]", this.totalPage[i - 1]);
+      },
+      // --- pagination ---
+
+      // --- 加入我的最愛 ---
+      addToFav(item,index){
+        console.log("item", item);
+        console.log("index", index);
+        this.favList.push(item);
+        console.log("this.favList",this.favList);
+        localStorage.setItem('myFav', JSON.stringify(this.favList));
+      },
+      // --- 加入我的最愛 ---
+
+      //取出localStorage內的我的最愛favList
+      getStorage(){
+        const favLists = localStorage.getItem('myFav');
+        if (!favLists) return;
+        this.favList = JSON.parse(favLists);
       },
     },
     async created() {
@@ -143,11 +153,9 @@
       await this.getAuthorizationHeader();
       //會等getAuthorizationHeader裡面的promise做完事情在做下一個getSourceData
       await this.getSourceData();
-
-      this.pageNum = Math.ceil(this.sourceData.length / this.pageSize) || 1; //計算總共有幾頁 默認1
-      console.log("this.sourceData.length", this.sourceData.length);
-      console.log("this.pageSize", this.pageSize);
-      console.log("this.pageNum", this.pageNum);
+      
+      //計算總共有幾頁 默認1
+      this.pageNum = Math.ceil(this.sourceData.length / this.pageSize) || 1; 
       //循環頁面
       for (let i = 0; i < this.pageNum; i++) {
         //每一個分頁都是一個數組
@@ -159,10 +167,7 @@
       }
       //取到數據後默認顯示第一頁內容
       this.dataShow = this.totalPage[this.curPage++];
-      console.log("this.dataShow", this.dataShow);
       this.i = this.curPage;
-      console.log("this.i", this.i);
-      console.log("this.curPage", this.curPage);
     },
   };
 </script>
@@ -171,7 +176,6 @@
   .home {
     max-width: 1200px;
     width: 100%;
-    //   border: 1px solid #000;
     margin: auto;
     .pagination {
       button {

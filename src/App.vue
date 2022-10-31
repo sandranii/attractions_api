@@ -1,7 +1,7 @@
 <template>
   <nav>
     <router-link to="/">資料列表</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/fav">我的最愛</router-link>
   </nav>
   <router-view/>
 </template>
