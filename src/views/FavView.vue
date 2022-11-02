@@ -1,21 +1,22 @@
 <template>
   <div class="fav">
     <main class="container"> 
-    <!-- 資料內容(當前分頁)_我的最愛 -->
+      <div class="top">        
       <!-- checkbox 全選-->
-      <!-- 檢查checkedItems{{checkedItems}} -->
-      <div class="selectAllArea">
-        <input 
-          class="checkboxAll"
-          id="checkbox"
-          v-model="checked"
-          type="checkbox"
-          @change="selectAll()"
-        >
-        <label for="checkbox">全選</label>
-        <button class="fav" @click="removeAllFav()">移除我的最愛</button>
+        <div class="selectAllArea">
+          <input 
+            class="checkboxAll"
+            id="checkbox"
+            v-model="checked"
+            type="checkbox"
+            @change="selectAll()"
+          >
+          <label for="checkbox">全選</label>
+          <button class="fav" @click="removeAllFav()">移除我的最愛</button>
+        </div>
       </div>
 
+      <!-- 資料內容(當前分頁)_我的最愛 -->
       <div v-for="(item, index) in favList" :key="index" class="itemList">
         <!-- checkbox 單一勾選-->
         <input 

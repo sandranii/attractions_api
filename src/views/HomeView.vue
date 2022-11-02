@@ -3,35 +3,39 @@
     <div v-if="load">Load</div>
     <div v-else-if="sourceError">{{sourceError}}</div>
     <main v-else class="container">
-      <!-- 分頁切換pagination -->
-      <div class="pagination">
-        <button type="button" @click="prevPage" :disabled="curPage === 1">上一頁</button>
-        <button
-          class="pageNum"
-          type="button"
-          v-for="i in pageNum"
-          :key="i"
-          :class="{ active: i === curPage }"
-          @click="page(i)"
-        >
-          {{ i }}
-        </button>
-        <button type="button" @click="nextPage" :disabled="curPage === pageNum">下一頁</button>
+      <!-- top(全選＆pagination) -->
+      <div class="top">
+        <!-- checkbox 全選-->
+        <div class="selectAllArea">
+          <input 
+            class="checkboxAll"
+            id="checkbox"
+            v-model="checked"
+            type="checkbox"
+            @change="selectAll()"
+          >
+          <label for="checkbox">全選</label>
+          <button class="fav" @click="selectAllFav()">加入我的最愛</button>
+        </div>
+        <!-- 分頁切換pagination -->
+        <div class="pagination">
+          <button type="button" @click="prevPage" :disabled="curPage === 1">上一頁</button>
+          <button
+            class="pageNum"
+            type="button"
+            v-for="i in pageNum"
+            :key="i"
+            :class="{ active: i === curPage }"
+            @click="page(i)"
+          >
+            {{ i }}
+          </button>
+          <button type="button" @click="nextPage" :disabled="curPage === pageNum">下一頁</button>
+        </div>
       </div>
+      
       <!-- 資料內容(當前分頁) -->
-        <p>檢查checkedNames內容 {{checkedNames}}</p>
-      <!-- checkbox 全選-->
-      <div class="selectAllArea">
-        <input 
-          class="checkboxAll"
-          id="checkbox"
-          v-model="checked"
-          type="checkbox"
-          @change="selectAll()"
-        >
-        <label for="checkbox">全選</label>
-        <button class="fav" @click="selectAllFav()">加入我的最愛</button>
-      </div>
+        <!-- <p>檢查checkedNames內容 {{checkedNames}}</p> -->
       <div v-for="(item, index) in dataShow" :key="index" class="itemList">
         <!-- checkbox 單一勾選-->
         <input 
@@ -176,10 +180,13 @@
         //   this.checked=false;
         // }else{
         //   this.checkedNames.push(item); //把勾選的item放進checkedNames裡面
-        //   if(this.dataShow.length == this.checkedNames.length){
-        //     this.checked=true; //當陣列長度一樣時 把全選打勾
-        //   }
         // }
+        this.checkedNames.push(item); 
+        if(this.dataShow.length == this.checkedNames.length){
+          this.checked=true; //當陣列長度一樣時 把全選打勾
+        }else{
+          this.checked=false; 
+        }
       },
       selectAll(){
         if(this.checked){  // 當這格選項從沒打勾變成有打勾的時候，要把這datashow arr裡面所有選項都打勾
@@ -227,10 +234,14 @@
 <style lang="scss" scoped>
   .home {
     .container {
-      // 分頁
-      .pagination {
-        button {
-          margin: 0 0.5rem;
+      .top{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .pagination {
+          button.pageNum {
+            margin: 0 0.5rem;
+          }
         }
       }
     }

@@ -16,17 +16,17 @@
   max-width: 1200px;
   width: 100%;
   margin: auto;
-  .selectAllArea{
-    box-sizing: border-box;
-    margin: 1rem;
-    text-align: left;
-    input{
-      margin-left: 1.5rem;
-      margin-right: 1rem;
-    }
-    button.fav{
-      margin-left: 1rem;
-    }
+  .top{
+      box-sizing: border-box;
+      margin: 1rem;
+      text-align: left;
+      input{
+        margin-left: 1.5rem;
+        margin-right: 1rem;
+      }
+      button.fav{
+        margin-left: 1rem;
+      }
   }
   // 資料
   .itemList {
