@@ -19,12 +19,35 @@
         <button type="button" @click="nextPage" :disabled="curPage === pageNum">下一頁</button>
       </div>
       <!-- 資料內容(當前分頁) -->
-      <div v-for="(item, index) in dataShow" :key="item.index" class="itemList">
+        <!-- <p>檢查checkedNames內容 {{checkedNames}}</p> -->
+      <!-- checkbox 全選-->
+      <div class="selectAllArea">
+        <input 
+          class="checkboxAll"
+          id="checkbox"
+          v-model="checked"
+          type="checkbox"
+          @change="selectAll()"
+        >
+        <label for="checkbox">全選</label>
+      </div>
+      <div v-for="(item, index) in dataShow" :key="index" class="itemList">
+        <!-- checkbox 單一勾選-->
+        <input 
+          v-model="checkedNames"
+          id="spot"
+          name="spot"
+          type="checkbox"
+          class="selectSingle"
+          :value="item"
+          @click="selectSingle(item)"
+        >
+
         <div class="txtContainer">
           <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
           <p>開放時間： {{ item.OpenTime }}</p>
           <p>景點描述： {{ item.DescriptionDetail }}</p>
-          <button class="fav" @click="addToFav(item,index)">加入我的最愛</button>
+          <button class="fav" @click="addToFav(item)">加入我的最愛</button>
         </div>
         <div class="picContainer">
           <img
@@ -61,6 +84,8 @@
         dataShow: [], //當前分頁顯示的資料
         curPage: 0, // 默認當前顯示第一頁
         favList: [], //我的最愛列表
+        checked: false,
+        checkedNames: [],//勾選的陣列
       };
     },
     methods: {
@@ -132,11 +157,8 @@
       // --- pagination ---
 
       // --- 加入我的最愛 ---
-      addToFav(item,index){
-        console.log("item", item);
-        console.log("index", index);
+      addToFav(item){
         this.favList.push(item);
-        console.log("this.favList",this.favList);
         localStorage.setItem('myFav', JSON.stringify(this.favList));
       },
       // --- 加入我的最愛 ---
@@ -147,6 +169,25 @@
         if (!favLists) return;
         this.favList = JSON.parse(favLists);
       },
+
+      // checkbox 勾選 加入我的最愛
+      selectSingle(item){
+        this.favList.push(item);
+        localStorage.setItem('myFav', JSON.stringify(this.favList));
+      },
+
+      selectAll(){
+        if(this.checked === true){  // 當這格選項從沒打勾變成有打勾的時候，要把這datashow arr裡面所有選項都打勾
+          this.checkedNames =this.dataShow;
+          console.log("concat前",this.favList);
+          this.favList = this.favList.concat(this.checkedNames); //把這頁的dataShow(checkedNames)都組合進去favList的陣列裡面
+          console.log("concat後",this.favList);
+          localStorage.setItem('myFav', JSON.stringify(this.favList));
+        }else{
+          this.checkedNames = [];// 當這格選項從打勾變成沒打勾的時候，清空checkedNames的陣列
+        }
+      }
+
     },
     async created() {
       //在async之內的作用域
@@ -177,30 +218,45 @@
     max-width: 1200px;
     width: 100%;
     margin: auto;
-    .pagination {
-      button {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        margin: 0 0.5rem;
-        padding: 0.25rem 0.55rem;
-        height: 1.875rem;
-        cursor: pointer;
-        &:hover{
-          background-color: #fa0;
-        }
-        &.active {
-          background-color: #fa0;
+
+    .container {
+      // 分頁
+      .pagination {
+        button {
+          background-color: #fff;
+          border: 1px solid #ddd;
+          margin: 0 0.5rem;
+          padding: 0.25rem 0.55rem;
+          height: 1.875rem;
+          cursor: pointer;
+          &:hover{
+            background-color: #fa0;
+          }
+          &.active {
+            background-color: #fa0;
+          }
         }
       }
-    }
-    .container {
+      // 全選
+      .selectAllArea{
+        // width: 6rem;
+        box-sizing: border-box;
+        margin: 1rem;
+        text-align: left;
+        // border: 1px solid #ddd;
+        input{
+          margin-left: 1.5rem;
+          margin-right: 1rem;
+        }
+      }
+      // 資料
       .itemList {
         margin: auto;
         display: flex;
         justify-content: space-around;
         align-items: center;
         border: 1px solid #ddd;
-        margin-top: 3rem;
+        margin-bottom: 3rem;
         padding: 1.5rem;
         .txtContainer {
           width: 60%;
