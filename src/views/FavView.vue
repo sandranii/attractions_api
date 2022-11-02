@@ -28,17 +28,19 @@
           :value="item"
           @click="selectSingle(item)"
         >
-        <div class="txtContainer">
-          <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
-          <p>開放時間： {{ item.OpenTime }}</p>
-          <p>景點描述： {{ item.DescriptionDetail }}</p>
-          <button class="fav" @click="removeFav(index)">移除我的最愛</button>
-        </div>
-        <div class="picContainer">
-          <img
-            :src="item.Picture.PictureUrl1"
-            :alt="item.PictureDescription1"
-          />
+        <div class="row">
+          <div class="txtContainer col col-12 col-md-8 col-xl-8">
+            <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
+            <p>開放時間： {{ item.OpenTime }}</p>
+            <p>景點描述： {{ item.DescriptionDetail }}</p>
+            <button class="fav" @click="removeFav(index)">移除我的最愛</button>
+          </div>
+          <div class="picContainer col col-12 col-md-4 col-xl-4">
+            <img
+              :src="item.Picture.PictureUrl1"
+              :alt="item.PictureDescription1"
+            />
+          </div>
         </div>
       </div>
     </main>
