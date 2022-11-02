@@ -1,5 +1,6 @@
 # attractions_api
 
+[DEMO](https://sandranii.github.io/attractions_api/)
 ## Project setup
 ```
 npm install
