@@ -19,7 +19,7 @@
         <button type="button" @click="nextPage" :disabled="curPage === pageNum">下一頁</button>
       </div>
       <!-- 資料內容(當前分頁) -->
-        <!-- <p>檢查checkedNames內容 {{checkedNames}}</p> -->
+        <p>檢查checkedNames內容 {{checkedNames}}</p>
       <!-- checkbox 全選-->
       <div class="selectAllArea">
         <input 
@@ -41,9 +41,8 @@
           type="checkbox"
           class="selectSingle"
           :value="item"
-          @click="selectSingle(item)"
+          @click="selectSingle(item, index)"
         >
-
         <div class="txtContainer">
           <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
           <p>開放時間： {{ item.OpenTime }}</p>
@@ -170,17 +169,21 @@
         if (!favLists) return;
         this.favList = JSON.parse(favLists);
       },
-
       // checkbox 勾選 加入我的最愛
-      selectSingle(item){
-        this.favList.push(item);
-        localStorage.setItem('myFav', JSON.stringify(this.favList));
+      selectSingle(item,index){
+        // if(this.checkedNames.indexOf(item) != -1){
+        //   this.checkedNames.splice(index,1);
+        //   this.checked=false;
+        // }else{
+        //   this.checkedNames.push(item); //把勾選的item放進checkedNames裡面
+        //   if(this.dataShow.length == this.checkedNames.length){
+        //     this.checked=true; //當陣列長度一樣時 把全選打勾
+        //   }
+        // }
       },
-
       selectAll(){
-        if(this.checked === true){  // 當這格選項從沒打勾變成有打勾的時候，要把這datashow arr裡面所有選項都打勾
+        if(this.checked){  // 當這格選項從沒打勾變成有打勾的時候，要把這datashow arr裡面所有選項都打勾
           this.checkedNames =this.dataShow;
-          
         }else{
           this.checkedNames = [];// 當這格選項從打勾變成沒打勾的時候，清空checkedNames的陣列
         }
@@ -223,75 +226,11 @@
 
 <style lang="scss" scoped>
   .home {
-    max-width: 1200px;
-    width: 100%;
-    margin: auto;
-    button {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      margin: 0 0.5rem;
-      padding: 0.25rem 0.55rem;
-      height: 1.875rem;
-      cursor: pointer;
-      &:hover{
-        background-color: #fa0;
-      }
-      &.active {
-        background-color: #fa0;
-      }
-    }
     .container {
       // 分頁
       .pagination {
         button {
-          background-color: #fff;
-          border: 1px solid #ddd;
           margin: 0 0.5rem;
-          padding: 0.25rem 0.55rem;
-          height: 1.875rem;
-          cursor: pointer;
-          &:hover{
-            background-color: #fa0;
-          }
-          &.active {
-            background-color: #fa0;
-          }
-        }
-      }
-      // 全選
-      .selectAllArea{
-        // width: 6rem;
-        box-sizing: border-box;
-        margin: 1rem;
-        text-align: left;
-        // border: 1px solid #ddd;
-        input{
-          margin-left: 1.5rem;
-          margin-right: 1rem;
-        }
-      }
-      // 資料
-      .itemList {
-        margin: auto;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        border: 1px solid #ddd;
-        margin-bottom: 3rem;
-        padding: 1.5rem;
-        .txtContainer {
-          width: 60%;
-          text-align: left;
-        }
-        .picContainer {
-          width: 30%;
-          overflow: hidden;
-          img {
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-            object-position: center center;
-          }
         }
       }
     }

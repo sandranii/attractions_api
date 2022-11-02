@@ -2,11 +2,36 @@
   <div class="fav">
     <main class="container"> 
     <!-- 資料內容(當前分頁)_我的最愛 -->
+      <!-- checkbox 全選-->
+      <!-- 檢查checkedItems{{checkedItems}} -->
+      <div class="selectAllArea">
+        <input 
+          class="checkboxAll"
+          id="checkbox"
+          v-model="checked"
+          type="checkbox"
+          @change="selectAll()"
+        >
+        <label for="checkbox">全選</label>
+        <button class="fav" @click="removeAllFav()">移除我的最愛</button>
+      </div>
+
       <div v-for="(item, index) in favList" :key="index" class="itemList">
+        <!-- checkbox 單一勾選-->
+        <input 
+          v-model="checkedItems"
+          id="spot"
+          name="spot"
+          type="checkbox"
+          class="selectSingle"
+          :value="item"
+          @click="selectSingle(item)"
+        >
         <div class="txtContainer">
           <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
           <p>開放時間： {{ item.OpenTime }}</p>
           <p>景點描述： {{ item.DescriptionDetail }}</p>
+          <button class="fav" @click="removeFav(index)">移除我的最愛</button>
         </div>
         <div class="picContainer">
           <img
@@ -25,6 +50,7 @@ export default {
   data(){
     return{
       favList: [],
+      checkedItems: [], //打勾的item陣列
     }
   },
   methods: {
@@ -33,6 +59,29 @@ export default {
       if(!favLists) return;
       this.favList = JSON.parse(favLists);
       console.log("我的最愛分頁", this.favList);
+    },
+    removeFav(index){
+      console.log("點到",index);
+      this.favList.splice(index,1);// 先找到點選的index後, favList陣列從這個index往後刪除掉一個元素｀
+      console.log("splice後", this.favList);
+      localStorage.setItem('myFav', JSON.stringify(this.favList));
+    },
+    selectAll(){
+      if(this.checked){  // 當這格選項從沒打勾變成有打勾的時候，要把favList arr裡面所有選項都打勾
+        this.checkedItems =this.favList;
+      }else{
+        this.checkedItems = [];// 當這格選項從打勾變成沒打勾的時候，清空checkedItems的陣列
+      }
+    },
+    removeAllFav(){
+      if(this.checked ===true){
+        console.log("concat前",this.favList);
+        this.favList = [];
+        console.log("concat後",this.favList);
+        localStorage.setItem('myFav', JSON.stringify(this.favList));
+      }else{
+        alert("請先勾取全選")
+      }
     }
   },
   created() {
@@ -41,36 +90,3 @@ export default {
 
 }
 </script>
-
-<style lang="scss" scoped>
-  .fav {
-    max-width: 1200px;
-    width: 100%;
-    margin: auto;
-    .container {
-      .itemList {
-        margin: auto;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        border: 1px solid #ddd;
-        margin-top: 3rem;
-        padding: 1.5rem;
-        .txtContainer {
-          width: 60%;
-          text-align: left;
-        }
-        .picContainer {
-          width: 30%;
-          overflow: hidden;
-          img {
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-            object-position: center center;
-          }
-        }
-      }
-    }
-  }
-</style>
