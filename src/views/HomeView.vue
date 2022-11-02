@@ -3,6 +3,17 @@
     <div v-if="load">Load</div>
     <div v-else-if="sourceError">{{sourceError}}</div>
     <main v-else class="container">
+      <div class="filterArea">
+        <!-- 篩選多個條件的用checkbox -->
+        篩選分類
+        <select name="categoryFilter" id="categoryFilter" v-model="categoryFilter" >
+          <option disabled>請選擇</option>
+          <option 
+            v-for="category in categoryArray" 
+            :key="category" 
+            :value="category">{{category}}</option>
+        </select>
+      </div>
       <!-- top(全選＆pagination) -->
       <div class="top">
         <!-- checkbox 全選-->
@@ -50,6 +61,9 @@
         <div class="row">
           <div class="txtContainer col col-12 col-md-8 col-xl-8">
             <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
+            <span>分類：{{ item.Class1? item.Class1:null }}
+                      {{ item.Class2? "、"+item.Class2:null }}
+                      {{ item.Class3? "、"+item.Class3:null }}</span>
             <p>開放時間： {{ item.OpenTime }}</p>
             <p>景點描述： {{ item.DescriptionDetail }}</p>
             <button class="fav" @click="addToFav(item)">加入我的最愛</button>
@@ -78,7 +92,9 @@
         accesstoken: "",
         load: false,
         sourceError: "",
-        sourceData: [], //api取出來的data
+        sourceData: [], //api取出來的原始data
+        categoryArray: [],
+        categoryFilter: [],
         city: "Taipei",
         params: {
           $format: "JSON",
@@ -87,7 +103,7 @@
         totalPage: [], //所有分頁的數據 不同分頁會分組
         pageSize: 3, //每頁顯示數量
         pageNum: 1, //共幾頁＝所有數量/每頁顯示數量
-        dataShow: [], //當前分頁顯示的資料
+        dataShow: [], //當前分頁顯示的資料 & 處理filter後的data
         curPage: 0, // 默認當前顯示第一頁
         favList: [], //我的最愛列表
         checked: false,
@@ -138,6 +154,11 @@
           })
           .then((response) => {
             this.sourceData = response.data;
+            //如果categoryArray已經有包含這個class或是這個class本身undefined, 就return false, 不包含就新增push項目
+            this.sourceData.filter(item=>this.categoryArray.includes(item.Class1) || item.Class1 === undefined ? false: this.categoryArray.push(item.Class1));
+            this.sourceData.filter(item=>this.categoryArray.includes(item.Class2) || item.Class2 === undefined ? false: this.categoryArray.push(item.Class2));
+            this.sourceData.filter(item=>this.categoryArray.includes(item.Class3) || item.Class3 === undefined ? false: this.categoryArray.push(item.Class3));
+            this.updateFilter()
           })
           .catch((err) => {
             this.sourceError = err.response;
@@ -145,6 +166,15 @@
           .finally(() => {
             this.load = false;
           });
+      },
+      updateFilter(){
+        this.dataShow = this.sourceData.filter(item => {
+          //沒有類別或符合類別
+          return this.categoryFilter.length === 0 
+          || this.categoryFilter.includes(item.Class1)
+          || this.categoryFilter.includes(item.Class2)
+          || this.categoryFilter.includes(item.Class3)
+        })
       },
       // --- pagination ---
       nextPage(i) {
@@ -209,6 +239,11 @@
       }
 
     },
+    watch: {
+      categoryFilter(){
+        this.updateFilter()
+      }
+    },
     async created() {
       //在async之內的作用域
       await this.getAuthorizationHeader();
@@ -236,6 +271,9 @@
 <style lang="scss" scoped>
   .home {
     .container {
+      .filterArea{
+        text-align: right;
+      }
       .top{
         display: flex;
         justify-content: space-between;
