@@ -30,6 +30,7 @@
           @change="selectAll()"
         >
         <label for="checkbox">全選</label>
+        <button class="fav" @click="selectAllFav()">加入我的最愛</button>
       </div>
       <div v-for="(item, index) in dataShow" :key="index" class="itemList">
         <!-- checkbox 單一勾選-->
@@ -179,12 +180,19 @@
       selectAll(){
         if(this.checked === true){  // 當這格選項從沒打勾變成有打勾的時候，要把這datashow arr裡面所有選項都打勾
           this.checkedNames =this.dataShow;
+          
+        }else{
+          this.checkedNames = [];// 當這格選項從打勾變成沒打勾的時候，清空checkedNames的陣列
+        }
+      },
+      selectAllFav(){
+        if(this.checked ===true){
           console.log("concat前",this.favList);
           this.favList = this.favList.concat(this.checkedNames); //把這頁的dataShow(checkedNames)都組合進去favList的陣列裡面
           console.log("concat後",this.favList);
           localStorage.setItem('myFav', JSON.stringify(this.favList));
         }else{
-          this.checkedNames = [];// 當這格選項從打勾變成沒打勾的時候，清空checkedNames的陣列
+          alert("請先勾取全選")
         }
       }
 
@@ -218,7 +226,20 @@
     max-width: 1200px;
     width: 100%;
     margin: auto;
-
+    button {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      margin: 0 0.5rem;
+      padding: 0.25rem 0.55rem;
+      height: 1.875rem;
+      cursor: pointer;
+      &:hover{
+        background-color: #fa0;
+      }
+      &.active {
+        background-color: #fa0;
+      }
+    }
     .container {
       // 分頁
       .pagination {

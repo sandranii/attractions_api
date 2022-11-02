@@ -2,12 +2,11 @@
   <div class="fav">
     <main class="container"> 
     <!-- 資料內容(當前分頁)_我的最愛 -->
-      <div v-for="(item, index) in favList" :key="item.index" class="itemList">
+      <div v-for="(item, index) in favList" :key="index" class="itemList">
         <div class="txtContainer">
           <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
           <p>開放時間： {{ item.OpenTime }}</p>
           <p>景點描述： {{ item.DescriptionDetail }}</p>
-          <button class="fav" @click="addToFav(item,index)">加入我的最愛</button>
         </div>
         <div class="picContainer">
           <img
