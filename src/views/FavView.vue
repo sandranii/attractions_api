@@ -31,6 +31,9 @@
         <div class="row">
           <div class="txtContainer col col-12 col-md-8 col-xl-8">
             <h2>景點名稱： {{ item.ScenicSpotName }}</h2>
+            <span>分類：{{ item.Class1? item.Class1:null }}
+                      {{ item.Class2? "、"+item.Class2:null }}
+                      {{ item.Class3? "、"+item.Class3:null }}</span>
             <p>開放時間： {{ item.OpenTime }}</p>
             <p>景點描述： {{ item.DescriptionDetail }}</p>
             <button class="fav" @click="removeFav(index)">移除我的最愛</button>
