@@ -46,7 +46,8 @@
       </div>
       
       <!-- 資料內容(當前分頁) -->
-        <!-- <p>檢查checkedNames內容 {{checkedNames}}</p> -->
+        <!-- <p>檢查dataShow內容 {{dataShow}}</p>
+        <p>檢查checkedNames內容 {{checkedNames}}</p> -->
       <div v-for="(item, index) in dataShow" :key="index" class="itemList">
         <!-- checkbox 單一勾選-->
         <input 
@@ -207,14 +208,12 @@
       },
       // checkbox 勾選 加入我的最愛
       selectSingle(item,index){
-        // if(this.checkedNames.indexOf(item) != -1){
-        //   this.checkedNames.splice(index,1);
-        //   this.checked=false;
-        // }else{
-        //   this.checkedNames.push(item); //把勾選的item放進checkedNames裡面
-        // }
-        this.checkedNames.push(item); 
-        if(this.dataShow.length == this.checkedNames.length){
+        if(this.checkedNames.indexOf(item) === -1){
+          this.checkedNames.push(item);
+        }else{
+          // this.checkedNames.splice(this.checkedNames.indexOf(item),1);
+        }
+        if(this.checkedNames.length === this.dataShow.length){
           this.checked=true; //當陣列長度一樣時 把全選打勾
         }else{
           this.checked=false; 
@@ -222,6 +221,7 @@
       },
       selectAll(){
         if(this.checked){  // 當這格選項從沒打勾變成有打勾的時候，要把這datashow arr裡面所有選項都打勾
+          this.checkedNames = []; //先把陣列清空
           this.checkedNames =this.dataShow;
         }else{
           this.checkedNames = [];// 當這格選項從打勾變成沒打勾的時候，清空checkedNames的陣列
@@ -229,9 +229,9 @@
       },
       selectAllFav(){
         if(this.checked ===true){
-          console.log("concat前",this.favList);
-          this.favList = this.favList.concat(this.checkedNames); //把這頁的dataShow(checkedNames)都組合進去favList的陣列裡面
-          console.log("concat後",this.favList);
+          // console.log("concat前",this.favList);
+          this.favList = this.favList.concat(this.dataShow); //把這頁的dataShow(checkedNames)都組合進去favList的陣列裡面
+          // console.log("concat後",this.favList);
           localStorage.setItem('myFav', JSON.stringify(this.favList));
         }else{
           alert("請先勾取全選")
