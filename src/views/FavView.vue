@@ -37,6 +37,7 @@
             <p>開放時間： {{ item.OpenTime }}</p>
             <p>景點描述： {{ item.DescriptionDetail }}</p>
             <button class="fav" @click="removeFav(index)">移除我的最愛</button>
+            <button class="fav" @click="edit(item)">編輯資料</button>
           </div>
           <div class="picContainer col col-12 col-md-4 col-xl-4">
             <img
@@ -46,6 +47,26 @@
           </div>
         </div>
       </div>
+      <div class="lightbox" v-show="showLightBox">
+            <div class="fix-list">
+                <h3>修改景點資料</h3>
+                <p>
+                    景點名稱:
+                    <input type="text" style="width: 70%" v-model="lbName">
+                </p>
+                <p>
+                    開放時間:
+                    <textarea type="text" style="width: 70%"  v-model="lbTime"/></p>
+                <p>
+                    景點描述:
+                    <textarea type="text" style="min-height: 100px; width: 70%"  v-model="lbDetail"/>
+                </p>
+                <div class="fix-btn">
+                    <button @click="editFinish">確定修改</button>
+                    <button @click="showLightBox=false">取消</button>
+                </div>
+            </div>
+        </div>
     </main>
   </div>
 </template>
@@ -57,6 +78,10 @@ export default {
     return{
       favList: [],
       checkedItems: [], //打勾的item陣列
+      showLightBox: false,
+      lbName: "", //燈箱內的vmodel
+      lbTime: "", //燈箱內的vmodel
+      lbDetail: "", //燈箱內的vmodel
     }
   },
   methods: {
@@ -83,7 +108,17 @@ export default {
       }else{
         alert("請先勾取全選")
       }
-    }
+    },
+    edit(item){
+      this.showLightBox = true;
+      this.lbName=item.ScenicSpotName;
+      this.lbTime=item.OpenTime;
+      this.lbDetail=item.DescriptionDetail;
+    },
+    editFinish() {
+      alert("功能建置中，請稍候");
+      this.showLightBox = false;
+  },
   },
   created() {
     this.getStorage()
@@ -91,3 +126,28 @@ export default {
 
 }
 </script>
+
+<style lang="scss" scoped>
+button.fav{
+  margin-right: 1rem;
+}
+.lightbox{
+  background-color: rgba($color: #000000, $alpha: 0.2);
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  .fix-list{
+    background-color: #fff;
+    border: 1px solid #ccc;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    margin-top: 50%;
+  }
+}
+
+  
+</style>
