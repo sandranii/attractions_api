@@ -64,12 +64,9 @@ export default {
       const favLists = localStorage.getItem('myFav');
       if(!favLists) return;
       this.favList = JSON.parse(favLists);
-      console.log("我的最愛分頁", this.favList);
     },
     removeFav(index){
-      console.log("點到",index);
       this.favList.splice(index,1);// 先找到點選的index後, favList陣列從這個index往後刪除掉一個元素｀
-      console.log("splice後", this.favList);
       localStorage.setItem('myFav', JSON.stringify(this.favList));
     },
     selectAll(){
@@ -81,9 +78,7 @@ export default {
     },
     removeAllFav(){
       if(this.checked ===true){
-        console.log("concat前",this.favList);
         this.favList = [];
-        console.log("concat後",this.favList);
         localStorage.setItem('myFav', JSON.stringify(this.favList));
       }else{
         alert("請先勾取全選")
